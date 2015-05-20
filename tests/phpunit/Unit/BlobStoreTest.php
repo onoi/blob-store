@@ -70,9 +70,9 @@ class BlobStoreTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
-	public function testReadBlobForUnknownId() {
+	public function testReadContainerForUnknownId() {
 
-		$container = new Container( ':Foo:bar', array() );
+		$container = new Container( 'blobstore:Foo:bar', array() );
 
 		$instance = new BlobStore( 'Foo', $this->cache );
 
@@ -87,7 +87,7 @@ class BlobStoreTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
-	public function testReadBlobForKnownId() {
+	public function testReadContainerForKnownId() {
 
 		$container = new Container( 'coffee:Foo:bar', array() );
 
@@ -110,14 +110,14 @@ class BlobStoreTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
-	public function testReadBlobForKnownIdToAlwaysCastArrayType() {
+	public function testReadContainerForKnownIdToAlwaysReturnArrayType() {
 
-		$container = new Container( ':Foo:bar', array( false ) );
+		$container = new Container( 'blobstore:Foo:bar', array( false ) );
 
 		$this->cache->expects( $this->once() )
 			->method( 'contains' )
 			->with(
-				$this->equalTo( ':Foo:bar' ) )
+				$this->equalTo( 'blobstore:Foo:bar' ) )
 			->will( $this->returnValue( true ) );
 
 		$this->cache->expects( $this->once() )
@@ -132,7 +132,7 @@ class BlobStoreTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
-	public function testSaveBlob() {
+	public function testSaveContainer() {
 
 		$container = array( 'Foobar', new \stdClass, array() );
 
@@ -149,12 +149,12 @@ class BlobStoreTest extends \PHPUnit_Framework_TestCase {
 		$instance->save( $container );
 	}
 
-	public function testDeleteBlobForSpecificIdentifier() {
+	public function testDeleteContainerForSpecificId() {
 
 		$this->cache->expects( $this->once() )
 			->method( 'delete' )
 			->with(
-				$this->equalTo( ':Foo:bar' ) );
+				$this->equalTo( 'blobstore:Foo:bar' ) );
 
 		$instance = new BlobStore( 'Foo', $this->cache );
 		$instance->delete( 'bar' );
@@ -176,18 +176,23 @@ class BlobStoreTest extends \PHPUnit_Framework_TestCase {
 	public function testDropUsingPackedInternalList() {
 
 		$internal = array(
-			'Foo' => array( 'Banana' => 42 ),
-			'Bar' => array( 'Orange' => 42 ) // Different NS
+			'Banana' => true,
+			'Orange' => true
 		);
 
 		$this->cache->expects( $this->once() )
 			->method( 'fetch' )
 			->will( $this->returnValue( serialize( $internal ) ) );
 
-		$this->cache->expects( $this->once() )
+		$this->cache->expects( $this->at( 1 ) )
 			->method( 'delete' )
 			->with(
 				$this->equalTo( 'Banana' ) );
+
+		$this->cache->expects( $this->at( 2 ) )
+			->method( 'delete' )
+			->with(
+				$this->equalTo( 'Orange' ) );
 
 		$instance = new BlobStore( 'Foo', $this->cache );
 		$instance->drop();

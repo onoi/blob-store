@@ -27,7 +27,7 @@ class BlobStore {
 	/**
 	 * @var string
 	 */
-	private $namespacePrefix;
+	private $namespacePrefix = 'blobstore';
 
 	/**
 	 * @var Cache
@@ -152,22 +152,15 @@ class BlobStore {
 	 */
 	public function drop() {
 
-		$trackerId = $this->namespacePrefix . ':' . md5( self::INTERNALLIST );
+		$trackerId = $this->namespacePrefix . ':' . md5( $this->namespace . self::INTERNALLIST );
 		$container = unserialize( $this->cache->fetch( $trackerId ) );
 
 		if ( !$container ) {
 			$container = array();
 		}
 
-		foreach ( $container as $ns => $identifiers ) {
-
-			if ( $this->namespace !== $ns ) {
-				continue;
-			}
-
-			foreach ( array_keys( $identifiers ) as $id ) {
-				$this->cache->delete( $id );
-			}
+		foreach ( array_keys( $container ) as $id ) {
+			$this->cache->delete( $id );
 		}
 	}
 
@@ -185,14 +178,14 @@ class BlobStore {
 	 */
 	private function addToInternalList( $id ) {
 
-		$internalListId = $this->namespacePrefix . ':' . md5( self::INTERNALLIST );
+		$internalListId = $this->namespacePrefix . ':' . md5( $this->namespace . self::INTERNALLIST );
 		$container = unserialize( $this->cache->fetch( $internalListId ) );
 
 		if ( !$container ) {
 			$container = array();
 		}
 
-		$container[$this->namespace][$id] = true;
+		$container[$id] = true;
 
 		$this->cache->save(
 			$internalListId,
@@ -202,14 +195,10 @@ class BlobStore {
 
 	private function removeFromInternalList( $id ) {
 
-		$internalListId = $this->namespacePrefix . ':' . md5( self::INTERNALLIST );
+		$internalListId = $this->namespacePrefix . ':' . md5( $this->namespace . self::INTERNALLIST );
 		$container = unserialize( $this->cache->fetch( $internalListId ) );
 
-		if ( !isset( $container[$this->namespace] ) ) {
-			return;
-		}
-
-		unset( $container[$this->namespace][$id] );
+		unset( $container[$id] );
 
 		$this->cache->save(
 			$internalListId,
