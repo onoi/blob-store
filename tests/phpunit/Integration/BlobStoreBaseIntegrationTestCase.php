@@ -52,7 +52,7 @@ abstract class BlobStoreBaseIntegrationTestCase extends \PHPUnit_Framework_TestC
 		);
 	}
 
-	public function testDeleteAndDrop() {
+	public function testDeleteSingleContainer() {
 
 		$blobStore = new BlobStore( 'Foo', $this->cache );
 
@@ -69,6 +69,11 @@ abstract class BlobStoreBaseIntegrationTestCase extends \PHPUnit_Framework_TestC
 		$this->assertFalse(
 			$blobStore->exists( 'foobar' )
 		);
+	}
+
+	public function testDropMultipleContainers() {
+
+		$blobStore = new BlobStore( 'Foo', $this->cache );
 
 		$container = $blobStore->read( 'bar' );
 		$container->set( 'one', 1001 );

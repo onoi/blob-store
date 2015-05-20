@@ -40,6 +40,8 @@ class BlobStore {
 	private $usageState = true;
 
 	/**
+	 * 0 = stored indefinitely until it is removed or dropped
+	 *
 	 * @var integer
 	 */
 	private $expiry = 0;
@@ -70,12 +72,25 @@ class BlobStore {
 	}
 
 	/**
+	 * Specifies whether the instance can be generally used or not
+	 *
 	 * @since 1.0
 	 *
 	 * @param boolean $usageState
 	 */
 	public function setUsageState( $usageState ) {
 		$this->usageState = (bool)$usageState;
+	}
+
+	/**
+	 * Specifies the expiry / time to live for stored containers in seconds
+	 *
+	 * @since 1.0
+	 *
+	 * @param integer $expiry
+	 */
+	public function setExpiryInSeconds( $expiry ) {
+		$this->expiry = $expiry;
 	}
 
 	/**
