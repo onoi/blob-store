@@ -12,6 +12,9 @@ matrix:
 services:
     - redis-server
 
+before_script:
+  - if [ -e ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini ]; then echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi
+
 script:
   - bash ./tests/travis/run-tests.sh
 
