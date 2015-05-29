@@ -116,6 +116,15 @@ class BlobStore {
 	/**
 	 * @since 1.0
 	 *
+	 * @return array
+	 */
+	public function getStats() {
+		return $this->cache->getStats();
+	}
+
+	/**
+	 * @since 1.0
+	 *
 	 * @param string $id
 	 *
 	 * @return Container
