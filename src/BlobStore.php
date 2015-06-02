@@ -191,7 +191,7 @@ class BlobStore {
 	private function getKey( $id ) {
 
 		if ( !is_string( $id ) ) {
-			throw new InvalidArgumentException( "Expected the id o be a string" );
+			throw new InvalidArgumentException( "Expected the id to be a string" );
 		}
 
 		return  $this->namespacePrefix . ':' . $this->namespace . ':' . $id;
