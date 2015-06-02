@@ -30,48 +30,47 @@ the dependency to your [composer.json][composer].
 	}
 }
 ```
-or to execute `composer require onoi/blob-store:~1.0`.
 
 ## Usage
 
 ```php
-	class Foo {
+class Foo {
 
-		private $blobStore;
+	private $blobStore;
 
-		public function __construct( BlobStore $blobStore ) {
-			$this->blobStore = $blobStore;
-		}
-
-		public function doSomethingFor( $id ) {
-			$container = $this->blobStore->read( md5( $id ) );
-
-			$container->set( 'one', array( new \stdClass, 'Text' ) );
-
-			$container->append(
-				'one',
-				new \stdClass
-			);
-
-			$container->delete( 'two' );
-
-			$this->blobStore->save( $container );
-		}
+	public function __construct( BlobStore $blobStore ) {
+		$this->blobStore = $blobStore;
 	}
+
+	public function doSomethingFor( $id ) {
+		$container = $this->blobStore->read( md5( $id ) );
+
+		$container->set( 'one', array( new \stdClass, 'Text' ) );
+
+		$container->append(
+			'one',
+			new \stdClass
+		);
+
+		$container->delete( 'two' );
+
+		$this->blobStore->save( $container );
+	}
+}
 ```
 ```php
 $cacheFactory = new CacheFactory();
 
 $compositeCache = $cacheFactory->newCompositeCache( array(
-	$cacheFactory->newFixedInMemoryLruCache( 500 ),
+	$cacheFactory->newFixedInMemoryLruCache(),
 	$cacheFactory->newDoctrineCache( new \Doctrine\Common\Cache\RedisCache( ... ) )
 ) );
 
 or
 
 $compositeCache = $cacheFactory->newCompositeCache( array(
-	$cacheFactory->newFixedInMemoryLruCache( 500 ),
-	$cacheFactory->newMediaWikiCache( 'redis' )
+	$cacheFactory->newFixedInMemoryLruCache(),
+	$cacheFactory->newMediaWikiCache( \ObjectCache::getInstance( 'redis' ) )
 ) );
 
 $blobStore = new BlobStore( 'foo', $compositeCache );
@@ -93,11 +92,12 @@ developers mailing list and have a look at the [contribution guidelinee](/CONTRI
 
 ### Tests
 
-The library provides unit tests that covers the core-functionality normally run by the [continues integration platform][travis]. Tests can also be executed manually using the PHPUnit configuration file found in the root directory.
+The library provides unit tests that covers the core-functionality normally run by the [continues integration platform][travis]. Tests can also be executed manually using the `composer phpunit` command from the root directory.
 
 ### Release notes
 
-* 1.0.0 initial release (not yet)
+* 1.0.0 (2015-06-02)
+ - Initial release
 
 ## License
 
