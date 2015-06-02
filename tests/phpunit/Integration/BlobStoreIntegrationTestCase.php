@@ -12,7 +12,7 @@ use Onoi\BlobStore\BlobStore;
  *
  * @author mwjames
  */
-abstract class BlobStoreBaseIntegrationTestCase extends \PHPUnit_Framework_TestCase {
+abstract class BlobStoreIntegrationTestCase extends \PHPUnit_Framework_TestCase {
 
 	protected $cache;
 

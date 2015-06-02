@@ -13,7 +13,7 @@ use Doctrine\Common\Cache\RedisCache;
  *
  * @author mwjames
  */
-class DoctrineRedisIntegrationTest extends BlobStoreBaseIntegrationTestCase {
+class DoctrineRedisIntegrationTest extends BlobStoreIntegrationTestCase {
 
 	protected function setUp() {
 

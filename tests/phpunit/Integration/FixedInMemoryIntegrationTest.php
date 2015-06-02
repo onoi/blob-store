@@ -13,7 +13,7 @@ use Onoi\Cache\CacheFactory;
  *
  * @author mwjames
  */
-class FixedInMemoryIntegrationTest extends BlobStoreBaseIntegrationTestCase {
+class FixedInMemoryIntegrationTest extends BlobStoreIntegrationTestCase {
 
 	protected function setUp() {
 
