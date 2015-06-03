@@ -3,6 +3,7 @@
 namespace Onoi\BlobStore;
 
 use Onoi\Cache\Cache;
+use Onoi\Cache\CacheFactory;
 use InvalidArgumentException;
 
 /**
@@ -35,6 +36,11 @@ class BlobStore {
 	private $cache;
 
 	/**
+	 * @var Cache
+	 */
+	private $internalCache;
+
+	/**
 	 * @var boolean
 	 */
 	private $usageState = true;
@@ -60,6 +66,10 @@ class BlobStore {
 
 		$this->namespace = $namespace;
 		$this->cache = $cache;
+
+		// It is only used internally therefore no injection required as it improves
+		// performance on long lists as seen in #1
+		$this->internalCache = CacheFactory::getInstance()->newFixedInMemoryLruCache( 500 );
 	}
 
 	/**
@@ -119,7 +129,9 @@ class BlobStore {
 	 * @return array
 	 */
 	public function getStats() {
-		return $this->cache->getStats();
+		return $this->cache->getStats() + array(
+			'internalCache' => $this->internalCache->getStats()
+		);
 	}
 
 	/**
@@ -133,8 +145,13 @@ class BlobStore {
 
 		$id = $this->getKey( $id );
 
-		if ( $this->cache->contains( $id ) ) {
+		// If possible use the raw data from the internal cache
+		// without unserialization
+		if ( $this->internalCache->contains( $id ) ) {
+			$data = $this->internalCache->fetch( $id );
+		} elseif ( $this->cache->contains( $id ) ) {
 			$data = unserialize( $this->cache->fetch( $id ) );
+			$this->internalCache->save( $id, $data );
 		} else {
 			$this->addToInternalList( $id );
 			$data = array();
@@ -149,6 +166,11 @@ class BlobStore {
 	 * @param Container $container
 	 */
 	public function save( Container $container ) {
+
+		$this->internalCache->save(
+			$container->getContainerId(),
+			$container->getContainerData()
+		);
 
 		$this->cache->save(
 			$container->getContainerId(),
@@ -167,6 +189,7 @@ class BlobStore {
 	public function delete( $id ) {
 		$this->removeFromInternalList( $this->getKey( $id ) );
 		$this->cache->delete( $this->getKey( $id ) );
+		$this->internalCache->delete( $this->getKey( $id ) );
 	}
 
 	/**

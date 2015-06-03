@@ -135,7 +135,8 @@ class BlobStoreTest extends \PHPUnit_Framework_TestCase {
 	public function testGetStats() {
 
 		$this->cache->expects( $this->once() )
-			->method( 'getStats' );
+			->method( 'getStats' )
+			->will( $this->returnValue( array() ) );
 
 		$instance = new BlobStore( 'Foo', $this->cache );
 		$instance->getStats();
