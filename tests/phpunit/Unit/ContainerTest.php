@@ -40,12 +40,31 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertEquals(
 			'Foo',
-			$instance->getContainerId()
+			$instance->getId()
 		);
 
 		$this->assertEquals(
 			$expected,
-			$instance->getContainerData()
+			$instance->getData()
+		);
+
+		$this->assertFalse(
+			$instance->isEmpty()
+		);
+	}
+
+	public function testExpiry() {
+
+		$instance = new Container(
+			'Foo',
+			array()
+		);
+
+		$instance->setExpiryInSeconds( 42 );
+
+		$this->assertSame(
+			42,
+			$instance->getExpiry()
 		);
 	}
 

@@ -23,6 +23,11 @@ class Container {
 	private $data = array();
 
 	/**
+	 * @var integer
+	 */
+	private $expiry = 0;
+
+	/**
 	 * @since 1.0
 	 *
 	 * @param string $id
@@ -43,7 +48,7 @@ class Container {
 	 *
 	 * @return string
 	 */
-	public function getContainerId() {
+	public function getId() {
 		return $this->id;
 	}
 
@@ -52,8 +57,35 @@ class Container {
 	 *
 	 * @return array
 	 */
-	public function getContainerData() {
+	public function getData() {
 		return $this->data;
+	}
+
+	/**
+	 * @since 1.1
+	 *
+	 * @return array
+	 */
+	public function getExpiry() {
+		return $this->expiry;
+	}
+
+	/**
+	 * @since 1.1
+	 *
+	 * @return integer $expiry
+	 */
+	public function setExpiryInSeconds( $expiry ) {
+		$this->expiry = (int)$expiry;
+	}
+
+	/**
+	 * @since 1.1
+	 *
+	 * @return boolean
+	 */
+	public function isEmpty() {
+		return $this->data === array();
 	}
 
 	/**

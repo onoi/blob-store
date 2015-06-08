@@ -171,11 +171,24 @@ class BlobStoreTest extends \PHPUnit_Framework_TestCase {
 				$this->equalTo( 42 ) );
 
 		$container = new Container( 'Foo:bar', $container );
+		$container->setExpiryInSeconds( 42 );
+
+		$instance = new BlobStore( 'Foo', $this->cache );
+
+		$instance->save( $container );
+	}
+
+	public function testTransferExpiry() {
 
 		$instance = new BlobStore( 'Foo', $this->cache );
 		$instance->setExpiryInSeconds( 42 );
 
-		$instance->save( $container );
+		$container = $instance->read( 'Bar' );
+
+		$this->assertEquals(
+			42,
+			$container->getExpiry()
+		);
 	}
 
 	public function testDeleteContainerForSpecificId() {

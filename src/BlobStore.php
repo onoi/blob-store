@@ -157,7 +157,10 @@ class BlobStore {
 			$data = array();
 		}
 
-		return new Container( $id, (array)$data );
+		$container = new Container( $id, (array)$data );
+		$container->setExpiryInSeconds( $this->expiry );
+
+		return $container;
 	}
 
 	/**
@@ -168,14 +171,15 @@ class BlobStore {
 	public function save( Container $container ) {
 
 		$this->internalCache->save(
-			$container->getContainerId(),
-			$container->getContainerData()
+			$container->getId(),
+			$container->getData(),
+			$container->getExpiry()
 		);
 
 		$this->cache->save(
-			$container->getContainerId(),
-			serialize( $container->getContainerData() ),
-			$this->expiry
+			$container->getId(),
+			serialize( $container->getData() ),
+			$container->getExpiry()
 		);
 
 		unset( $container );
