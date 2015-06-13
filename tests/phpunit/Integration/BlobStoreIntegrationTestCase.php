@@ -71,9 +71,10 @@ abstract class BlobStoreIntegrationTestCase extends \PHPUnit_Framework_TestCase 
 		);
 	}
 
-	public function testDropMultipleContainers() {
+	public function testExpiry() {
 
 		$blobStore = new BlobStore( 'Foo', $this->cache );
+		$blobStore->setExpiryInSeconds( 4 );
 
 		$container = $blobStore->read( 'bar' );
 		$container->set( 'one', 1001 );
@@ -91,7 +92,7 @@ abstract class BlobStoreIntegrationTestCase extends \PHPUnit_Framework_TestCase 
 			$blobStore->exists( 'foo' )
 		);
 
-		$blobStore->drop();
+		sleep( 5 );
 
 		$this->assertFalse(
 			$blobStore->exists( 'bar' )

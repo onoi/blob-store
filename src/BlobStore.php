@@ -18,8 +18,6 @@ use InvalidArgumentException;
  */
 class BlobStore {
 
-	const INTERNALLIST = 'internal-blobstore-id-list';
-
 	/**
 	 * @var string
 	 */
@@ -153,7 +151,6 @@ class BlobStore {
 			$data = unserialize( $this->cache->fetch( $id ) );
 			$this->internalCache->save( $id, $data );
 		} else {
-			$this->addToInternalList( $id );
 			$data = array();
 		}
 
@@ -191,28 +188,20 @@ class BlobStore {
 	 * @param string $id
 	 */
 	public function delete( $id ) {
-		$this->removeFromInternalList( $this->getKey( $id ) );
 		$this->cache->delete( $this->getKey( $id ) );
 		$this->internalCache->delete( $this->getKey( $id ) );
 	}
 
 	/**
-	 * Drop all containers that belong to the invoked namespace at once
-	 *
 	 * @since 1.0
 	 */
 	public function drop() {
-
-		$trackerId = $this->namespacePrefix . ':' . md5( $this->namespace . self::INTERNALLIST );
-		$container = unserialize( $this->cache->fetch( $trackerId ) );
-
-		if ( !$container ) {
-			$container = array();
-		}
-
-		foreach ( array_keys( $container ) as $id ) {
-			$this->cache->delete( $id );
-		}
+		// After using the internal list for several production runs it seems
+		// difficult to keep track of ids especially when using long lists and
+		// not to increase overhead which can easily produced by 50K+ entries
+		// which would require to split the internal list
+		//
+		// Using an appropriate expiry seems more efficient
 	}
 
 	private function getKey( $id ) {
@@ -222,39 +211,6 @@ class BlobStore {
 		}
 
 		return  $this->namespacePrefix . ':' . $this->namespace . ':' . $id;
-	}
-
-	/**
-	 * Track container id's separatly to be able to find them at once if required
-	 */
-	private function addToInternalList( $id ) {
-
-		$internalListId = $this->namespacePrefix . ':' . md5( $this->namespace . self::INTERNALLIST );
-		$container = unserialize( $this->cache->fetch( $internalListId ) );
-
-		if ( !$container ) {
-			$container = array();
-		}
-
-		$container[$id] = true;
-
-		$this->cache->save(
-			$internalListId,
-			serialize( $container )
-		);
-	}
-
-	private function removeFromInternalList( $id ) {
-
-		$internalListId = $this->namespacePrefix . ':' . md5( $this->namespace . self::INTERNALLIST );
-		$container = unserialize( $this->cache->fetch( $internalListId ) );
-
-		unset( $container[$id] );
-
-		$this->cache->save(
-			$internalListId,
-			serialize( $container )
-		);
 	}
 
 }

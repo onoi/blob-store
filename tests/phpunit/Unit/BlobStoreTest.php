@@ -202,39 +202,13 @@ class BlobStoreTest extends \PHPUnit_Framework_TestCase {
 		$instance->delete( 'bar' );
 	}
 
-	public function testDropUsingEmptyInternalList() {
+	public function testDropDoesNothing() {
 
-		$this->cache->expects( $this->once() )
-			->method( 'fetch' )
-			->will( $this->returnValue( false ) );
+		$this->cache->expects( $this->never() )
+			->method( 'fetch' );
 
 		$this->cache->expects( $this->never() )
 			->method( 'delete' );
-
-		$instance = new BlobStore( 'Foo', $this->cache );
-		$instance->drop();
-	}
-
-	public function testDropUsingPackedInternalList() {
-
-		$internal = array(
-			'Banana' => true,
-			'Orange' => true
-		);
-
-		$this->cache->expects( $this->once() )
-			->method( 'fetch' )
-			->will( $this->returnValue( serialize( $internal ) ) );
-
-		$this->cache->expects( $this->at( 1 ) )
-			->method( 'delete' )
-			->with(
-				$this->equalTo( 'Banana' ) );
-
-		$this->cache->expects( $this->at( 2 ) )
-			->method( 'delete' )
-			->with(
-				$this->equalTo( 'Orange' ) );
 
 		$instance = new BlobStore( 'Foo', $this->cache );
 		$instance->drop();
