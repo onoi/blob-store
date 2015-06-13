@@ -26,7 +26,7 @@ the dependency to your [composer.json][composer].
 ```json
 {
 	"require": {
-		"onoi/blob-store": "~1.0"
+		"onoi/blob-store": "~1.1"
 	}
 }
 ```
@@ -95,6 +95,10 @@ developers mailing list and have a look at the [contribution guidelinee](/CONTRI
 The library provides unit tests that covers the core-functionality normally run by the [continues integration platform][travis]. Tests can also be executed manually using the `composer phpunit` command from the root directory.
 
 ### Release notes
+
+* 1.1.0 (2015-06-13)
+ - Removed tracking of internal ID list
+ - Added `Container::setExpiryInSeconds`
 
 * 1.0.0 (2015-06-02)
  - Initial release
