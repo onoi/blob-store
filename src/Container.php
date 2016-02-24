@@ -33,7 +33,7 @@ class Container {
 	 * @param string $id
 	 * @param array $data
 	 */
-	public function __construct( $id, array $data ) {
+	public function __construct( $id, array $data = array() ) {
 
 		if ( !is_string( $id ) ) {
 			throw new InvalidArgumentException( "Expected the id to be a string" );
@@ -146,6 +146,30 @@ class Container {
 			(array)$this->data[$key],
 			$value
 		);
+	}
+
+	/**
+	 * @since 1.2
+	 *
+	 * @param integer|string $hash
+	 */
+	public function addToLinkedList( $hash ) {
+		$this->append( '@linkedList', $hash );
+	}
+
+	/**
+	 * @since 1.2
+	 *
+	 * @param array
+	 */
+	public function getLinkedList() {
+
+		if ( !isset( $this->data['@linkedList'] ) ) {
+			return array();
+		}
+
+		// Removes any duplicates
+		return array_flip( $this->data['@linkedList'] );
 	}
 
 	/**

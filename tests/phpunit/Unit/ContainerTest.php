@@ -128,4 +128,19 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
 		);
 	}
 
+	public function testAddToLinkedList() {
+
+		$instance = new Container(
+			'Foo'
+		);
+
+		$instance->addToLinkedList( 'Bar' );
+		$instance->addToLinkedList( 'Bar' );
+
+		$this->assertEquals(
+			array( 'Bar' => 1 ),
+			$instance->getLinkedList()
+		);
+	}
+
 }

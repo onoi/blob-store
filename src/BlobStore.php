@@ -188,6 +188,13 @@ class BlobStore {
 	 * @param string $id
 	 */
 	public function delete( $id ) {
+
+		$container = $this->read( $id );
+
+		foreach ( $container->getLinkedList() as $lid => $val ) {
+			$this->cache->delete( $this->getKey( $lid ) );
+		}
+
 		$this->cache->delete( $this->getKey( $id ) );
 		$this->internalCache->delete( $this->getKey( $id ) );
 	}

@@ -214,4 +214,32 @@ class BlobStoreTest extends \PHPUnit_Framework_TestCase {
 		$instance->drop();
 	}
 
+	public function testDeleteMembersOfLinkedListAsWell() {
+
+		$linkedContainer = serialize(
+			array( '@linkedList' => array( 'a42b' ) )
+		);
+
+		$this->cache->expects( $this->once() )
+			->method( 'contains' )
+			->with( $this->equalTo( 'blobstore:Foo:Bar' ) )
+			->will( $this->returnValue( true ) );
+
+		$this->cache->expects( $this->once() )
+			->method( 'fetch' )
+			->will( $this->returnValue( $linkedContainer ) );
+
+		$this->cache->expects( $this->at( 2 ) )
+			->method( 'delete' )
+			->with(	$this->equalTo( 'blobstore:Foo:a42b' ) );
+
+		$this->cache->expects( $this->at( 3 ) )
+			->method( 'delete' )
+			->with( $this->equalTo( 'blobstore:Foo:Bar' ) );
+
+		$instance = new BlobStore( 'Foo', $this->cache );
+
+		$instance->delete( 'Bar' );
+	}
+
 }

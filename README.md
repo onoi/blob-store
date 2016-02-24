@@ -96,6 +96,10 @@ The library provides unit tests that covers the core-functionality normally run 
 
 ### Release notes
 
+* 1.2.0 (2016-02-25)
+ - Added `Container::addToLinkedList` to maintain a linked linked list of interdependent
+   content
+
 * 1.1.0 (2015-06-13)
  - Removed tracking of internal ID list
  - Added `Container::setExpiryInSeconds`
