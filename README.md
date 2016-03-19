@@ -26,7 +26,7 @@ the dependency to your [composer.json][composer].
 ```json
 {
 	"require": {
-		"onoi/blob-store": "~1.1"
+		"onoi/blob-store": "~1.2"
 	}
 }
 ```
@@ -96,9 +96,10 @@ The library provides unit tests that covers the core-functionality normally run 
 
 ### Release notes
 
-* 1.2.0 (2016-02-25)
- - Added `Container::addToLinkedList` to maintain a linked linked list of interdependent
-   content
+* 1.2.0 (2016-03-19)
+ - Added `Container::addToLinkedList` to maintain a linked list of interdependent
+   containers (if the original container is removed then all linked containers will be
+   expunged as well)
 
 * 1.1.0 (2015-06-13)
  - Removed tracking of internal ID list
