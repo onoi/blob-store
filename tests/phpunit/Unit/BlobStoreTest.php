@@ -217,7 +217,7 @@ class BlobStoreTest extends \PHPUnit_Framework_TestCase {
 	public function testDeleteMembersOfLinkedListAsWell() {
 
 		$linkedContainer = serialize(
-			array( '@linkedList' => array( 'a42b' ) )
+			array( '@linkedList' => array( 'a42b' => true ) )
 		);
 
 		$this->cache->expects( $this->once() )

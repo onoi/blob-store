@@ -154,7 +154,12 @@ class Container {
 	 * @param integer|string $hash
 	 */
 	public function addToLinkedList( $hash ) {
-		$this->append( '@linkedList', $hash );
+
+		if ( !isset( $this->data['@linkedList'] ) ) {
+			$this->data['@linkedList'] = array();
+		}
+
+		$this->data['@linkedList'][$hash] = true;
 	}
 
 	/**
@@ -168,8 +173,7 @@ class Container {
 			return array();
 		}
 
-		// Removes any duplicates
-		return array_flip( $this->data['@linkedList'] );
+		return array_keys( $this->data['@linkedList'] );
 	}
 
 	/**
