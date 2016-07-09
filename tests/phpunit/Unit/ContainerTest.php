@@ -138,7 +138,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase {
 		$instance->addToLinkedList( 'Bar' );
 
 		$this->assertEquals(
-			array( 'Bar' => 1 ),
+			array( 'Bar' ),
 			$instance->getLinkedList()
 		);
 	}
