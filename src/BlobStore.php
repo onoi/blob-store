@@ -191,8 +191,10 @@ class BlobStore {
 
 		$container = $this->read( $id );
 
-		foreach ( $container->getLinkedList() as $linkedListId ) {
-			$this->cache->delete( $this->getKey( (string)$linkedListId ) );
+		foreach ( $container->getLinkedList() as $linkedId ) {
+			$key = $this->getKey( (string)$linkedId );
+			$this->cache->delete( $key );
+			$this->internalCache->delete( $key );
 		}
 
 		$this->cache->delete( $this->getKey( $id ) );
